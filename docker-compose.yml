@@ -22,6 +22,7 @@ services:
   web:
     build: .
     container_name: news_web
+    command: sh -c "echo 'Waiting for database...' && until python -c 'import MySQLdb; MySQLdb.connect(host=\"$$DB_HOST\", user=\"$$DB_USER\", passwd=\"$$DB_PASSWORD\", db=\"$$DB_NAME\", port=$$DB_PORT)' 2>/dev/null; do echo 'Database unavailable - sleeping'; sleep 1; done && echo 'Database ready!' && python manage.py migrate --noinput && python manage.py collectstatic --noinput || true && echo 'Starting server...' && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -40,7 +41,6 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
-    # Use the entrypoint script from Dockerfile which handles migrations
 
 volumes:
   db_data:
