@@ -1,28 +1,10 @@
 version: '3.8'
 
 services:
-  db:
-    image: mariadb:10.11
-    container_name: news_db
-    environment:
-      MYSQL_DATABASE: news_db
-      MYSQL_USER: news_user
-      MYSQL_PASSWORD: news_password
-      MYSQL_ROOT_PASSWORD: root_password
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   web:
     build: .
     container_name: news_web
-    command: sh -c "echo 'Waiting for database...' && sleep 15 && echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Collecting static files...' && python manage.py collectstatic --noinput || true && echo 'Starting server...' && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Collecting static files...' && python manage.py collectstatic --noinput || true && echo 'Starting server...' && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -32,18 +14,13 @@ services:
     env_file:
       - .env
     environment:
-      - DB_HOST=db
-      - DB_NAME=news_db
-      - DB_USER=news_user
-      - DB_PASSWORD=news_password
-      - DB_PORT=3306
-    depends_on:
-      db:
-        condition: service_healthy
+      - USE_SQLITE=True
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-change-this}
+      - DEBUG=${DEBUG:-True}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
     restart: unless-stopped
 
 volumes:
-  db_data:
   static_volume:
   media_volume:
 
