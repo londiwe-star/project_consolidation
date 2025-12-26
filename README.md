@@ -39,14 +39,14 @@ This project can be run in two ways:
 
 ### Prerequisites
 - Python 3.8 or higher
-- MariaDB 10.5+ (or MySQL 8.0+)
 - pip (Python package manager)
+- **No database installation required** - Uses SQLite by default (included with Python)
 
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd news-application-development
+git clone https://github.com/londiwe-star/project_consolidation.git
+cd project_consolidation
 ```
 
 ### Step 2: Create Virtual Environment
@@ -56,11 +56,19 @@ cd news-application-development
 python -m venv venv
 
 # Activate virtual environment
-# On Windows:
-venv\Scripts\activate
+# On Windows (PowerShell):
+venv\Scripts\Activate.ps1
+
+# On Windows (Command Prompt):
+venv\Scripts\activate.bat
 
 # On Mac/Linux:
 source venv/bin/activate
+```
+
+**Note for Windows PowerShell**: If you get an execution policy error, run:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 ```
 
 ### Step 3: Install Dependencies
@@ -71,48 +79,53 @@ pip install -r requirements.txt
 
 **Note**: On some systems, you may need to use `pip3` instead of `pip`.
 
-### Step 4: Configure Database
+### Step 4: Environment Configuration
 
-Create a MariaDB database:
+Create a `.env` file in the project root directory. You can copy from the example:
 
-```sql
-CREATE DATABASE news_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'news_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON news_db.* TO 'news_user'@'localhost';
-FLUSH PRIVILEGES;
+```bash
+# On Windows (PowerShell):
+Copy-Item .env.example .env
+
+# On Mac/Linux:
+cp .env.example .env
 ```
 
-### Step 5: Environment Configuration
-
-Create a `.env` file in the project root directory with the following variables:
+Or create `.env` manually with the following content:
 
 ```env
 # Django Settings
-SECRET_KEY=your-secret-key-here
+# Generate a secret key using: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+SECRET_KEY=django-insecure-change-this-to-a-secure-key-in-production
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Database Configuration
-DB_NAME=news_db
-DB_USER=news_user
-DB_PASSWORD=your_password
-DB_HOST=localhost
-DB_PORT=3306
+# Use SQLite for local testing (no installation needed)
+USE_SQLITE=True
 
-# Email Configuration (for notifications)
+# If you want to use MariaDB instead, set USE_SQLITE=False and configure below:
+# USE_SQLITE=False
+# DB_NAME=news_db
+# DB_USER=news_user
+# DB_PASSWORD=your_password
+# DB_HOST=localhost
+# DB_PORT=3306
+
+# Email Configuration (optional - for notifications)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
 DEFAULT_FROM_EMAIL=noreply@newsapp.com
 
 # Twitter API Configuration (optional)
-TWITTER_API_KEY=your-api-key
-TWITTER_API_SECRET=your-api-secret
-TWITTER_ACCESS_TOKEN=your-access-token
-TWITTER_ACCESS_TOKEN_SECRET=your-access-token-secret
-TWITTER_BEARER_TOKEN=your-bearer-token
+TWITTER_API_KEY=
+TWITTER_API_SECRET=
+TWITTER_ACCESS_TOKEN=
+TWITTER_ACCESS_TOKEN_SECRET=
+TWITTER_BEARER_TOKEN=
 
 # Logging Configuration (optional)
 ENABLE_FILE_LOGGING=False
@@ -122,10 +135,10 @@ LOGS_DIR=
 **Important Security Notes:**
 - Never commit the `.env` file to version control
 - Generate a secure `SECRET_KEY` using: `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
-- For Gmail, use an App Password instead of your regular password
 - The `.env` file is already excluded in `.gitignore`
+- SQLite is used by default - no database installation needed!
 
-### Step 6: Run Database Migrations
+### Step 5: Run Database Migrations
 
 **This step is critical!** You must run migrations before starting the server:
 
@@ -137,27 +150,79 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Step 7: Create Superuser
+**Expected Output:**
+```
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, news, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  ...
+  Applying news.0001_initial... OK
+  ...
+```
+
+### Step 6: Create Superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Follow the prompts to create an admin user.
+Follow the prompts to create an admin user:
+- Username: (enter a username)
+- Email address: (optional, press Enter to skip)
+- Password: (enter a secure password)
+- Password (again): (confirm password)
 
-### Step 8: Collect Static Files (Optional)
-
-```bash
-python manage.py collectstatic
-```
-
-### Step 9: Run Development Server
+### Step 7: Run Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Visit `http://127.0.0.1:8000/` in your browser.
+You should see:
+```
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+```
+
+### Step 8: Access the Application
+
+Open your browser and visit:
+- **Home page**: http://127.0.0.1:8000/
+- **Admin panel**: http://127.0.0.1:8000/admin/
+
+### Optional: Using MariaDB Instead of SQLite
+
+If you prefer to use MariaDB/MySQL for local testing:
+
+1. **Install MariaDB** (if not installed):
+   - Windows: Download from https://mariadb.org/download/
+   - Mac: `brew install mariadb`
+   - Linux: `sudo apt-get install mariadb-server`
+
+2. **Create database**:
+   ```sql
+   CREATE DATABASE news_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE USER 'news_user'@'localhost' IDENTIFIED BY 'your_password';
+   GRANT ALL PRIVILEGES ON news_db.* TO 'news_user'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+
+3. **Update `.env` file**:
+   ```env
+   USE_SQLITE=False
+   DB_NAME=news_db
+   DB_USER=news_user
+   DB_PASSWORD=your_password
+   DB_HOST=localhost
+   DB_PORT=3306
+   ```
+
+4. **Run migrations again**:
+   ```bash
+   python manage.py migrate
+   ```
 
 ---
 
