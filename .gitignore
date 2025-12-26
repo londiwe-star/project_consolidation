@@ -63,3 +63,7 @@ htmlcov/
 
 # Backup files
 *.bak
+
+# Logs directory (if file logging is enabled)
+logs/
+*.log
