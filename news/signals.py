@@ -1,5 +1,13 @@
 """
 Django signals for automated actions when articles are approved.
+
+This module implements Django signal handlers that trigger automated actions:
+- Email notifications to subscribers when articles are approved
+- Automatic posting to X (Twitter) when articles are published
+- Tracking of approval status changes
+
+Signals ensure that these actions happen automatically without requiring
+explicit calls in the view code.
 """
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver

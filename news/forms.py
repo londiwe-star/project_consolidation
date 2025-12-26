@@ -1,5 +1,14 @@
 """
 Forms for the news application.
+
+This module contains Django forms for user input and data validation:
+- CustomUserCreationForm: User registration with role selection
+- LoginForm: User authentication
+- ArticleForm: Article creation and editing
+- ArticleApprovalForm: Editor approval workflow
+- PublisherForm: Publisher management
+
+All forms include proper validation and role-based field filtering.
 """
 from django import forms
 from django.contrib.auth.forms import UserCreationForm

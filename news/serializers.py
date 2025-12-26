@@ -1,5 +1,14 @@
 """
 Serializers for the REST API.
+
+This module provides Django REST Framework serializers for API data serialization:
+- ArticleSerializer: Article data with nested author and publisher information
+- PublisherSerializer: Publisher information
+- JournalistSerializer: Journalist profile data
+- NewsletterSerializer: Newsletter content with author and publisher
+
+Serializers handle data transformation between Python objects and JSON format
+for API responses.
 """
 from rest_framework import serializers
 from .models import Article, Publisher, CustomUser, Newsletter
