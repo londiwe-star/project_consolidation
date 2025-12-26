@@ -30,20 +30,20 @@ RUN mkdir -p /app/staticfiles /app/media
 EXPOSE 8000
 
 # Create entrypoint script with database wait
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Waiting for database to be ready..."\n\
-until python -c "import MySQLdb; MySQLdb.connect(host=\"$DB_HOST\", user=\"$DB_USER\", passwd=\"$DB_PASSWORD\", db=\"$DB_NAME\", port=$DB_PORT)" 2>/dev/null; do\n\
-  echo "Database is unavailable - sleeping"\n\
-  sleep 1\n\
-done\n\
-echo "Database is ready!"\n\
-echo "Running migrations..."\n\
-python manage.py migrate --noinput\n\
-echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput || true\n\
-echo "Starting server..."\n\
-exec python manage.py runserver 0.0.0.0:8000' > /app/entrypoint.sh && \
+RUN echo '#!/bin/bash' > /app/entrypoint.sh && \
+    echo 'set -e' >> /app/entrypoint.sh && \
+    echo 'echo "Waiting for database to be ready..."' >> /app/entrypoint.sh && \
+    echo 'until python -c "import MySQLdb; MySQLdb.connect(host=\"$DB_HOST\", user=\"$DB_USER\", passwd=\"$DB_PASSWORD\", db=\"$DB_NAME\", port=$DB_PORT)" 2>/dev/null; do' >> /app/entrypoint.sh && \
+    echo '  echo "Database is unavailable - sleeping"' >> /app/entrypoint.sh && \
+    echo '  sleep 1' >> /app/entrypoint.sh && \
+    echo 'done' >> /app/entrypoint.sh && \
+    echo 'echo "Database is ready!"' >> /app/entrypoint.sh && \
+    echo 'echo "Running migrations..."' >> /app/entrypoint.sh && \
+    echo 'python manage.py migrate --noinput' >> /app/entrypoint.sh && \
+    echo 'echo "Collecting static files..."' >> /app/entrypoint.sh && \
+    echo 'python manage.py collectstatic --noinput || true' >> /app/entrypoint.sh && \
+    echo 'echo "Starting server..."' >> /app/entrypoint.sh && \
+    echo 'exec python manage.py runserver 0.0.0.0:8000' >> /app/entrypoint.sh && \
     chmod +x /app/entrypoint.sh
 
 # Use entrypoint script
