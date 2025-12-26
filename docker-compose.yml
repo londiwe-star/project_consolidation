@@ -22,7 +22,7 @@ services:
   web:
     build: .
     container_name: news_web
-    command: sh -c "echo 'Waiting for database to be ready...' && sleep 10 && for i in 1 2 3 4 5 6 7 8 9 10; do if python -c 'import MySQLdb; MySQLdb.connect(host=\"$$DB_HOST\", user=\"$$DB_USER\", passwd=\"$$DB_PASSWORD\", db=\"$$DB_NAME\", port=3306)' 2>/dev/null; then echo 'Database is ready!'; break; else echo 'Database unavailable - attempt $$i/10 - sleeping...'; sleep 3; fi; done && echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Collecting static files...' && python manage.py collectstatic --noinput || true && echo 'Starting server...' && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "echo 'Waiting for database...' && sleep 15 && echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Collecting static files...' && python manage.py collectstatic --noinput || true && echo 'Starting server...' && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
