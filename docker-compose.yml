@@ -22,7 +22,6 @@ services:
   web:
     build: .
     container_name: news_web
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -41,6 +40,7 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    # Use the entrypoint script from Dockerfile which handles migrations
 
 volumes:
   db_data:
