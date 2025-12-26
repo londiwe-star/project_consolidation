@@ -1,5 +1,14 @@
 """
 Views for the news application.
+
+This module contains all view functions for the news platform, including:
+- Authentication views (login, register, logout)
+- Article management views (CRUD operations)
+- Dashboard views for different user roles (reader, journalist, editor)
+- Publisher and journalist profile views
+- Subscription management views
+
+All views implement proper permission checks and role-based access control.
 """
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required

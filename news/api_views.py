@@ -1,5 +1,13 @@
 """
 API views for the REST API.
+
+This module provides RESTful API endpoints using Django REST Framework:
+- ArticleViewSet: Filtered article retrieval based on user subscriptions
+- PublisherViewSet: Publisher information endpoints
+- JournalistViewSet: Journalist profile endpoints
+
+The API implements subscription-based filtering, ensuring users only see
+articles from publishers or journalists they are subscribed to.
 """
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action

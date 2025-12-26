@@ -1,5 +1,14 @@
 """
 Models for the news application.
+
+This module defines the core data models for the news platform:
+- CustomUser: Extended user model with role-based access control
+- Publisher: News organization/publisher entities
+- Article: News articles with approval workflow
+- Newsletter: Newsletter content model
+
+The models implement role-based permissions and relationships between
+users, publishers, journalists, and articles.
 """
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
